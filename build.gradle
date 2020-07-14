@@ -1,0 +1,88 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'io.cliber'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+task genJaxb {
+	ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+	ext.classesDir = "${buildDir}/classes/jaxb"
+	ext.schema = "src/main/resources/pokemon.xsd"
+
+	outputs.dir classesDir
+
+	doLast() {
+		project.ant {
+			taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+					classpath: configurations.jaxb.asPath
+			mkdir(dir: sourcesDir)
+			mkdir(dir: classesDir)
+
+			xjc(destdir: sourcesDir, schema: schema) {
+				arg(value: "-wsdl")
+				produces(dir: sourcesDir, includes: "**/*.java")
+			}
+
+			javac(destdir: classesDir, source: 1.6, target: 1.6, debug: true,
+					debugLevel: "lines,vars,source", includeantruntime: false,
+					classpath: configurations.jaxb.asPath) {
+				src(path: sourcesDir)
+				include(name: "**/*.java")
+				include(name: "*.java")
+			}
+
+			copy(todir: classesDir) {
+				fileset(dir: sourcesDir, erroronmissingdir: false) {
+					exclude(name: "**/*.java")
+				}
+			}
+		}
+	}
+}
+
+task afterEclipseImport {
+	dependsOn "genJaxb"
+}
+
+// tag::jaxb[]
+configurations {
+	jaxb
+}
+
+bootJar {
+	baseName = 'pokemon-ws'
+	version =  '0.1.0'
+	from genJaxb.classesDir
+}
+
+
+dependencies {
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile 'org.springframework.boot:spring-boot-starter-web'
+	compile 'org.springframework.boot:spring-boot-starter-web-services'
+	compile 'com.fasterxml.jackson.core:jackson-databind'
+	compile 'org.apache.httpcomponents:httpcore:4.4.1'
+	compile 'org.apache.httpcomponents:httpclient:4.5'
+	runtimeOnly 'mysql:mysql-connector-java'
+	compile 'wsdl4j:wsdl4j:1.6.1'
+	jaxb("org.glassfish.jaxb:jaxb-xjc:2.2.11")
+	compile(files(genJaxb.classesDir).builtBy(genJaxb))
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+

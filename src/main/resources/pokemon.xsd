@@ -1,0 +1,169 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://cliber.io"
+           targetNamespace="http://cliber.io" elementFormDefault="qualified">
+
+    <xs:element name="getAbilitiesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getNameRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getBaseExperienceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getHeldItemsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getLocalAreaEncountersRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getNameResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAbilitiesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="abilities" maxOccurs="100" minOccurs="1" type="tns:ability"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getBaseExperienceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="base_experience" type="xs:integer"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getHeldItemsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="heldItems" type="tns:heldItem" minOccurs="0" maxOccurs="100" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:integer"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getLocalAreaEncountersResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="encounters" type="tns:encounter" minOccurs="0" maxOccurs="100"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="ability">
+        <xs:sequence>
+            <xs:element name="isHidden" type="xs:boolean"/>
+            <xs:element name="slot" type="xs:int"/>
+            <xs:element name="abilityItem" type="tns:abilityItem" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="abilityItem">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="heldItem">
+        <xs:sequence>
+            <xs:element name="item" type="tns:heldItemItem"/>
+            <xs:element name="versionDetails" type="tns:versionDetail" minOccurs="0" maxOccurs="100" />
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="heldItemItem">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="versionDetail">
+        <xs:sequence>
+            <xs:element name="rarity" type="xs:integer"/>
+            <xs:element name="version" type="tns:version"/>
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="version">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="encounter">
+        <xs:sequence>
+            <xs:element name="locationArea" type="tns:locationArea"/>
+            <xs:element name="versionDetails" type="tns:EncounterVersionDetail" minOccurs="0" maxOccurs="100" />
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="locationArea">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="EncounterVersionDetail">
+        <xs:sequence>
+            <xs:element name="encounterDetails" type="tns:EncounterDetail" minOccurs="0" maxOccurs="100"/>
+            <xs:element name="maxChance" type="xs:integer"/>
+            <xs:element name="version" type="tns:version"/>
+        </xs:sequence>
+
+    </xs:complexType>
+    <xs:complexType name="EncounterDetail">
+        <xs:sequence>
+            <xs:element name="chance" type="xs:integer" />
+            <xs:element name="maxLevel" type="xs:integer"/>
+            <xs:element name="minLevel" type="xs:integer"/>
+            <xs:element name="method" type="tns:version"/>
+
+        </xs:sequence>
+
+    </xs:complexType>
+</xs:schema>
